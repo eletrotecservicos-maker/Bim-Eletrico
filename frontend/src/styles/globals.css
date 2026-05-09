@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importar JetBrains Mono para valores numéricos técnicos */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0A0E1A;
+  --bg-secondary: #0D1421;
+  --bg-surface: #1A2235;
+  --border-color: #1E2D45;
+  --accent: #1565C0;
+  --accent-light: #42A5F5;
+  --text-primary: #E8EDF5;
+  --text-secondary: #8FA3BE;
+  --text-muted: #4A6080;
+  --safe: #2E7D32;
+  --warning: #E65100;
+  --danger: #B71C1C;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar industrial */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Texto técnico/numérico */
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Input industrial */
+.input-industrial {
+  @apply bg-background-secondary border border-background-border text-text-primary
+         rounded px-3 py-1.5 text-sm font-mono
+         focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue
+         transition-colors;
+}
+
+/* Botão primário */
+.btn-primary {
+  @apply bg-accent-blue hover:bg-accent-blue-bright text-white
+         px-4 py-2 rounded text-sm font-medium
+         transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Botão secundário */
+.btn-secondary {
+  @apply bg-background-surface hover:bg-background-border text-text-secondary
+         border border-background-border hover:border-accent-blue
+         px-4 py-2 rounded text-sm font-medium transition-colors;
+}
+
+/* Card de painel */
+.panel-card {
+  @apply bg-background-secondary border border-background-border rounded-lg;
+}
+
+/* Status badges */
+.badge-safe {
+  @apply bg-status-safe/20 text-status-safe-light border border-status-safe/40
+         text-xs px-2 py-0.5 rounded font-mono font-medium;
+}
+.badge-danger {
+  @apply bg-status-danger/20 text-status-danger-light border border-status-danger/40
+         text-xs px-2 py-0.5 rounded font-mono font-medium;
+}
+.badge-warning {
+  @apply bg-status-warning/20 text-status-warning-light border border-status-warning/40
+         text-xs px-2 py-0.5 rounded font-mono font-medium;
+}
+
+/* Seção de painel com título */
+.panel-section {
+  @apply border-b border-background-border pb-3 mb-3;
+}
+.panel-section-title {
+  @apply text-xs font-semibold uppercase tracking-widest text-text-muted mb-2;
+}
+
+/* Gradiente de heatmap */
+.heatmap-legend {
+  background: linear-gradient(to right, #1a237e, #0d47a1, #00695c, #f57f17, #b71c1c);
+}
+
+/* Animação de cálculo */
+@keyframes calculating {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.calculating {
+  animation: calculating 1s ease-in-out infinite;
+}
+
+/* Three.js canvas */
+canvas {
+  display: block;
+}
