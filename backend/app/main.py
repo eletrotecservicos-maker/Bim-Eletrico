@@ -21,7 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.core.database import init_db
-from app.api.v1 import calculations, projects, reports
+from app.api.v1 import calculations, projects, reports, ai
 
 
 @asynccontextmanager
@@ -70,6 +70,7 @@ app.add_middleware(
 app.include_router(projects.router, prefix="/api/v1")
 app.include_router(calculations.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
+app.include_router(ai.router, prefix="/api/v1")
 
 
 @app.get("/", tags=["health"])

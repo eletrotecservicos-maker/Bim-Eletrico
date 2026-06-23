@@ -161,7 +161,7 @@ export interface SoilAnalysisResult {
 // ---- UI ----
 
 export type ViewMode = '3d' | 'heatmap' | 'potential' | 'step';
-export type ActivePanel = 'soil' | 'mesh' | 'fault' | 'results' | 'report';
+export type ActivePanel = 'soil' | 'mesh' | 'fault' | 'results' | 'report' | 'ai';
 export type HeatmapType = 'potential' | 'touch' | 'step';
 
 export interface AppNotification {

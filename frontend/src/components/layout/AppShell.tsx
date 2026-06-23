@@ -13,6 +13,7 @@ import SoilPanel from '@/components/panels/SoilPanel';
 import MeshPanel from '@/components/panels/MeshPanel';
 import FaultPanel from '@/components/panels/FaultPanel';
 import ResultsPanel from '@/components/panels/ResultsPanel';
+import AIAssistantPanel from '@/components/panels/AIAssistantPanel';
 import { useUiStore } from '@/store/uiStore';
 import { useProjectStore } from '@/store/projectStore';
 
@@ -32,7 +33,7 @@ const Viewport3D = dynamic(() => import('@/components/viewport/Viewport3D'), {
 const HeatmapView = dynamic(() => import('@/components/viewport/HeatmapView'), { ssr: false });
 
 export default function AppShell() {
-  const { activePanel, leftSidebarOpen, rightPanelOpen, viewMode } = useUiStore();
+  const { activePanel, leftSidebarOpen, rightPanelOpen, viewMode, aiPanelOpen } = useUiStore();
   const { activeProject } = useProjectStore();
 
   const renderRightPanel = () => {
@@ -80,6 +81,15 @@ export default function AppShell() {
 
       {/* ── Status bar rodapé ── */}
       <StatusBar />
+
+      {/* ── Painel flutuante IA (ELIAS) ── */}
+      {aiPanelOpen && (
+        <div className="fixed bottom-10 right-4 w-80 h-[520px] z-50
+                        border border-background-border rounded-lg shadow-2xl
+                        bg-background-secondary flex flex-col overflow-hidden">
+          <AIAssistantPanel />
+        </div>
+      )}
     </div>
   );
 }

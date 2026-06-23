@@ -10,9 +10,11 @@ interface UiStore {
   activePanel: ActivePanel;
   leftSidebarOpen: boolean;
   rightPanelOpen: boolean;
+  aiPanelOpen: boolean;
   setActivePanel: (panel: ActivePanel) => void;
   toggleLeftSidebar: () => void;
   toggleRightPanel: () => void;
+  toggleAiPanel: () => void;
 
   // Viewport
   viewMode: ViewMode;
@@ -43,9 +45,11 @@ export const useUiStore = create<UiStore>((set) => ({
   activePanel: 'soil',
   leftSidebarOpen: true,
   rightPanelOpen: true,
+  aiPanelOpen: false,
   setActivePanel: (panel) => set({ activePanel: panel }),
   toggleLeftSidebar: () => set(s => ({ leftSidebarOpen: !s.leftSidebarOpen })),
   toggleRightPanel: () => set(s => ({ rightPanelOpen: !s.rightPanelOpen })),
+  toggleAiPanel: () => set(s => ({ aiPanelOpen: !s.aiPanelOpen })),
 
   viewMode: '3d',
   heatmapType: 'potential',

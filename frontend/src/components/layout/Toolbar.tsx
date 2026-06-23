@@ -13,7 +13,7 @@ export default function Toolbar() {
   const {
     viewMode, setViewMode, activePanel, setActivePanel,
     toggleLeftSidebar, leftSidebarOpen, rightPanelOpen, toggleRightPanel,
-    setNewProjectModalOpen,
+    setNewProjectModalOpen, aiPanelOpen, toggleAiPanel,
   } = useUiStore();
 
   const viewModes: { key: ViewMode; label: string; icon: React.ReactNode }[] = [
@@ -134,6 +134,13 @@ export default function Toolbar() {
         </div>
       )}
 
+      {/* Botão IA — ELIAS */}
+      <ToolbarButton onClick={toggleAiPanel} active={aiPanelOpen} title="Assistente de IA Elétrica (ELIAS)">
+        <IconAI />
+      </ToolbarButton>
+
+      <div className="w-px h-6 bg-background-border mx-1" />
+
       {/* Botão CALCULAR */}
       <button
         onClick={runCalculation}
@@ -225,6 +232,19 @@ function IconPlay() {
   return (
     <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5">
       <polygon points="3,2 13,8 3,14"/>
+    </svg>
+  );
+}
+function IconAI() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-full h-full">
+      <rect x="2" y="7" width="12" height="8" rx="1.5"/>
+      <path d="M8 2v3"/>
+      <circle cx="8" cy="1.5" r="0.8" fill="currentColor" stroke="none"/>
+      <path d="M6 7V6a2 2 0 014 0v1"/>
+      <circle cx="6" cy="11" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="10" cy="11" r="1" fill="currentColor" stroke="none"/>
+      <path d="M6 13.5h4" strokeLinecap="round"/>
     </svg>
   );
 }
