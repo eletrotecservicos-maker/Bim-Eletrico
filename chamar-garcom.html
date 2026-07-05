@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chamar Garçom</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --surface: #ffffff;
+    --ink: #2b2621;
+    --muted: #8a8074;
+    --line: #e6e0d4;
+    --accent: #b5511e;
+    --accent-ink: #ffffff;
+    --ok: #3f7d4f;
+    --warn: #c98a1f;
+    --danger: #b5511e;
+    --shadow: 0 8px 24px rgba(43,38,33,0.08);
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #181410;
+      --surface: #241f1a;
+      --ink: #f2ece2;
+      --muted: #a89c8c;
+      --line: #3a332b;
+      --accent: #e07a45;
+      --accent-ink: #1a1410;
+      --ok: #6fbf82;
+      --warn: #e0ac4c;
+      --danger: #e07a45;
+      --shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #181410;
+    --surface: #241f1a;
+    --ink: #f2ece2;
+    --muted: #a89c8c;
+    --line: #3a332b;
+    --accent: #e07a45;
+    --accent-ink: #1a1410;
+    --ok: #6fbf82;
+    --warn: #e0ac4c;
+    --danger: #e07a45;
+    --shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f1ea;
+    --surface: #ffffff;
+    --ink: #2b2621;
+    --muted: #8a8074;
+    --line: #e6e0d4;
+    --accent: #b5511e;
+    --accent-ink: #ffffff;
+    --ok: #3f7d4f;
+    --warn: #c98a1f;
+    --danger: #b5511e;
+    --shadow: 0 8px 24px rgba(43,38,33,0.08);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 1.3rem;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .tabs {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: var(--shadow);
+  }
+  .tab-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  section.view { display: none; }
+  section.view.active { display: block; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* ---- Cliente ---- */
+  label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+  input[type="number"], input[type="text"] {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .grid-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.15s;
+  }
+  .action-btn:active { transform: scale(0.96); }
+  .action-btn:hover { border-color: var(--accent); }
+  .action-btn .icon { font-size: 1.6rem; }
+  .action-btn.primary {
+    grid-column: 1 / -1;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: transparent;
+    padding: 22px 10px;
+    font-size: 1rem;
+  }
+  .action-btn.primary .icon { font-size: 2rem; }
+
+  .status-msg {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: none;
+  }
+  .status-msg.show { display: block; }
+  .status-msg.pending { background: rgba(201,138,31,0.15); color: var(--warn); }
+  .status-msg.done { background: rgba(63,125,79,0.15); color: var(--ok); }
+
+  .custom-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .custom-row button {
+    flex-shrink: 0;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* ---- Painel do garçom ---- */
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .panel-header .stats {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .sound-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .call-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .call-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .call-item.urgent {
+    border-color: var(--danger);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(181,81,30,0.25); }
+    50% { box-shadow: 0 0 0 6px rgba(181,81,30,0); }
+  }
+  .call-mesa {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+  }
+  .call-info { flex: 1; min-width: 0; }
+  .call-type { font-weight: 700; font-size: 0.95rem; }
+  .call-time { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .resolve-btn {
+    border: none;
+    background: var(--ok);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 10px;
+    font-size: 0.9rem;
+  }
+  .history-toggle {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+  #history { margin-top: 14px; display: none; }
+  #history.show { display: block; }
+  .hist-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  footer.hint {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔔 Chamar Garçom</h1>
+    <div class="tabs">
+      <button class="tab-btn active" data-view="cliente">Cliente</button>
+      <button class="tab-btn" data-view="garcom">Garçom</button>
+    </div>
+  </header>
+
+  <section id="view-cliente" class="view active">
+    <div class="card">
+      <label for="mesa">Número da mesa</label>
+      <input type="number" id="mesa" min="1" step="1" placeholder="Ex: 12" inputmode="numeric">
+
+      <div class="grid-actions">
+        <button class="action-btn primary" data-tipo="Chamar Garçom" data-icon="🔔">
+          <span class="icon">🔔</span> Chamar Garçom
+        </button>
+        <button class="action-btn" data-tipo="Pedir a Conta" data-icon="🧾">
+          <span class="icon">🧾</span> Pedir a Conta
+        </button>
+        <button class="action-btn" data-tipo="Pedir Cardápio" data-icon="📋">
+          <span class="icon">📋</span> Cardápio
+        </button>
+        <button class="action-btn" data-tipo="Pedir Água/Talheres" data-icon="🥤">
+          <span class="icon">🥤</span> Água / Talheres
+        </button>
+      </div>
+
+      <div class="custom-row">
+        <input type="text" id="custom-msg" placeholder="Outra solicitação (opcional)">
+        <button id="custom-send">Enviar</button>
+      </div>
+
+      <div id="status" class="status-msg"></div>
+    </div>
+  </section>
+
+  <section id="view-garcom" class="view">
+    <div class="card">
+      <div class="panel-header">
+        <span class="stats" id="pending-count">0 chamadas pendentes</span>
+        <label class="sound-toggle"><input type="checkbox" id="sound-check" checked> Som</label>
+      </div>
+      <div id="call-list" class="call-list">
+        <div class="empty">Nenhuma chamada no momento 🙂</div>
+      </div>
+      <button class="history-toggle" id="history-toggle">Ver histórico de hoje</button>
+      <div id="history"></div>
+    </div>
+  </section>
+
+  <footer class="hint">Funciona entre abas do mesmo navegador — abra esta página em outra aba para simular mesa e garçom.</footer>
+</div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'chamarGarcom.calls';
+  const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('chamar-garcom') : null;
+
+  function loadCalls() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function saveCalls(calls) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(calls));
+    if (bc) bc.postMessage('update');
+  }
+
+  // ---- Tabs ----
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const views = { cliente: document.getElementById('view-cliente'), garcom: document.getElementById('view-garcom') };
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.values(views).forEach(v => v.classList.remove('active'));
+      views[btn.dataset.view].classList.add('active');
+      if (btn.dataset.view === 'garcom') renderCallList();
+    });
+  });
+
+  // ---- Cliente: envio de chamadas ----
+  const mesaInput = document.getElementById('mesa');
+  const statusEl = document.getElementById('status');
+  let statusTimer = null;
+
+  function showStatus(text, kind) {
+    statusEl.textContent = text;
+    statusEl.className = 'status-msg show ' + kind;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => statusEl.classList.remove('show'), 4000);
+  }
+
+  function sendCall(tipo) {
+    const mesa = mesaInput.value.trim();
+    if (!mesa) {
+      showStatus('Informe o número da mesa antes de chamar.', 'pending');
+      mesaInput.focus();
+      return;
+    }
+    const calls = loadCalls();
+    calls.push({
+      id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      mesa: mesa,
+      tipo: tipo,
+      criadoEm: Date.now(),
+      status: 'pendente'
+    });
+    saveCalls(calls);
+    showStatus('✔ "' + tipo + '" enviado para a mesa ' + mesa + '. Aguarde o garçom.', 'pending');
+  }
+
+  document.querySelectorAll('.action-btn[data-tipo]').forEach(btn => {
+    btn.addEventListener('click', () => sendCall(btn.dataset.tipo));
+  });
+
+  document.getElementById('custom-send').addEventListener('click', () => {
+    const input = document.getElementById('custom-msg');
+    const msg = input.value.trim();
+    if (!msg) return;
+    sendCall(msg);
+    input.value = '';
+  });
+  document.getElementById('custom-msg').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('custom-send').click();
+  });
+
+  // ---- Painel do garçom ----
+  const callListEl = document.getElementById('call-list');
+  const pendingCountEl = document.getElementById('pending-count');
+  const soundCheck = document.getElementById('sound-check');
+  const historyEl = document.getElementById('history');
+  const historyToggle = document.getElementById('history-toggle');
+  let lastPendingIds = new Set();
+
+  historyToggle.addEventListener('click', () => {
+    historyEl.classList.toggle('show');
+    historyToggle.textContent = historyEl.classList.contains('show') ? 'Ocultar histórico' : 'Ver histórico de hoje';
+    if (historyEl.classList.contains('show')) renderHistory();
+  });
+
+  function beep() {
+    if (!soundCheck.checked) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (e) { /* audio not available */ }
+  }
+
+  function timeAgo(ts) {
+    const diff = Math.max(0, Date.now() - ts);
+    const min = Math.floor(diff / 60000);
+    const sec = Math.floor((diff % 60000) / 1000);
+    if (min <= 0) return sec + 's atrás';
+    return min + 'min atrás';
+  }
+
+  function renderCallList() {
+    const calls = loadCalls();
+    const pending = calls.filter(c => c.status === 'pendente').sort((a, b) => a.criadoEm - b.criadoEm);
+
+    pendingCountEl.textContent = pending.length + (pending.length === 1 ? ' chamada pendente' : ' chamadas pendentes');
+
+    const currentIds = new Set(pending.map(c => c.id));
+    let hasNew = false;
+    currentIds.forEach(id => { if (!lastPendingIds.has(id)) hasNew = true; });
+    if (hasNew && lastPendingIds.size > 0) beep();
+    else if (hasNew && lastPendingIds.size === 0 && pending.length > 0) beep();
+    lastPendingIds = currentIds;
+
+    if (pending.length === 0) {
+      callListEl.innerHTML = '<div class="empty">Nenhuma chamada no momento 🙂</div>';
+      return;
+    }
+
+    callListEl.innerHTML = '';
+    pending.forEach(call => {
+      const urgent = (Date.now() - call.criadoEm) > 3 * 60 * 1000;
+      const item = document.createElement('div');
+      item.className = 'call-item' + (urgent ? ' urgent' : '');
+      item.innerHTML =
+        '<div class="call-mesa">#' + escapeHtml(call.mesa) + '</div>' +
+        '<div class="call-info">' +
+          '<div class="call-type">' + escapeHtml(call.tipo) + '</div>' +
+          '<div class="call-time" data-ts="' + call.criadoEm + '">' + timeAgo(call.criadoEm) + '</div>' +
+        '</div>' +
+        '<button class="resolve-btn" data-id="' + call.id + '">Atender</button>';
+      callListEl.appendChild(item);
+    });
+
+    callListEl.querySelectorAll('.resolve-btn').forEach(btn => {
+      btn.addEventListener('click', () => resolveCall(btn.dataset.id));
+    });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function resolveCall(id) {
+    const calls = loadCalls();
+    const call = calls.find(c => c.id === id);
+    if (call) {
+      call.status = 'atendido';
+      call.atendidoEm = Date.now();
+    }
+    saveCalls(calls);
+    renderCallList();
+  }
+
+  function renderHistory() {
+    const calls = loadCalls();
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const done = calls
+      .filter(c => c.status === 'atendido' && c.criadoEm >= startOfDay.getTime())
+      .sort((a, b) => b.criadoEm - a.criadoEm);
+
+    if (done.length === 0) {
+      historyEl.innerHTML = '<div class="empty">Sem chamadas atendidas hoje.</div>';
+      return;
+    }
+    historyEl.innerHTML = done.map(c => {
+      const t = new Date(c.criadoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      return '<div class="hist-item"><span>Mesa ' + escapeHtml(c.mesa) + ' — ' + escapeHtml(c.tipo) + '</span><span>' + t + '</span></div>';
+    }).join('');
+  }
+
+  // Atualiza relógios "há X min" a cada 10s
+  setInterval(() => {
+    document.querySelectorAll('.call-time[data-ts]').forEach(el => {
+      el.textContent = timeAgo(Number(el.dataset.ts));
+    });
+    if (views.garcom.classList.contains('active')) renderCallList();
+  }, 10000);
+
+  // Sincroniza entre abas
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY && views.garcom.classList.contains('active')) renderCallList();
+  });
+  if (bc) bc.onmessage = () => { if (views.garcom.classList.contains('active')) renderCallList(); };
+
+  // Limpa chamadas com mais de 24h para não acumular indefinidamente
+  (function cleanup() {
+    const calls = loadCalls();
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    const kept = calls.filter(c => c.criadoEm >= cutoff);
+    if (kept.length !== calls.length) saveCalls(kept);
+  })();
+
+  renderCallList();
+})();
+</script>
+</body>
+</html>
